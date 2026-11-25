@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de Untapped · Asmodevs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: manual técnico de estudio, directo y con humor seco, como asmodevs.es
+   IDEA: un manual de campo impreso en terminal: fichas con esquinas cortadas y trazas de circuito
+   PICTURE: el logo-cerebro con líneas de escaneo junto a la portada de Untapped enmarcada
+   COLOUR and TYPE: negro #070405, rojo #FF4034 / #B00E16, hueso #E8D4D0; Chakra Petch
+   LAYOUT: portada con dos caminos, índice fijo, capítulos de texto + capturas ampliables */
+:root{color-scheme:dark;--bg:#070405;--raised:#0F0808;--raised2:#150b0b;--red:#FF4034;--deep:#B00E16;--ink:#E8D4D0;--muted:#8E6F6B;--line:#2A1416;--cut:12px}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.6 "Chakra Petch","Segoe UI",system-ui,sans-serif;overflow-x:clip}
+a{color:var(--red)}
+img{display:block;max-width:100%;height:auto}
+.wrap{max-width:1240px;margin:0 auto;padding:0 max(4vw,16px)}
+.cut{clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)))}
+/* cabecera */
+header.top{position:sticky;top:0;z-index:20;background:rgba(7,4,5,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--red);font-weight:600;letter-spacing:.12em}
+.brand img{width:46px}
+.toc{display:flex;gap:6px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.toc a{flex:none;color:var(--ink);text-decoration:none;padding:8px 12px;font-size:15px;border:1px solid transparent}
+.toc a:hover,.toc a:focus-visible{border-color:var(--line);outline:none}
+.toc a.cta{background:var(--red);color:#120506;font-weight:600}
+/* portada */
+.hero{position:relative;padding:clamp(36px,6vw,80px) 0 clamp(32px,5vw,64px);border-bottom:1px solid var(--line);overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,64,52,.035) 0 2px,transparent 2px 5px);pointer-events:none}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,4vw,56px);align-items:center}
+.logo-big{width:min(300px,70%);margin-bottom:22px}
+h1{font-size:clamp(34px,5vw,52px);line-height:1.05;margin:0 0 16px;font-weight:700;text-wrap:balance}
+.lead{color:var(--muted);font-size:18px;max-width:34em;margin:0 0 26px}
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.path{display:block;text-decoration:none;color:var(--ink);background:var(--line);padding:1px}
+.path>div{background:var(--raised);padding:18px 18px 20px;height:100%}
+.path b{display:block;font-size:20px;color:var(--red);margin-bottom:4px}
+.path span{color:var(--muted);font-size:15px}
+.path:hover>div,.path:focus-visible>div{background:var(--raised2)}
+.path:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.hero-shot{position:relative;background:linear-gradient(135deg,var(--red),var(--deep));padding:2px}
+.hero-shot img{width:100%}
+.hero-shot .tag{position:absolute;left:-1px;bottom:18px;background:var(--red);color:#120506;font-weight:700;font-size:13px;padding:6px 12px}
+/* capítulos */
+.part{padding:clamp(40px,6vw,80px) 0 10px;border-bottom:1px solid var(--line)}
+.part-head{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.part-head h2{font-size:clamp(30px,4vw,44px);line-height:1.05;margin:0}
+.part-head .chip{background:var(--red);color:#120506;font-weight:700;font-size:14px;padding:6px 12px}
+.part-intro{color:var(--muted);max-width:46em;margin:0 0 10px;font-size:17px}
+.chapters{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+.chapters a{color:var(--ink);text-decoration:none;font-size:14px;border:1px solid var(--line);padding:6px 10px}
+.chapters a:hover,.chapters a:focus-visible{border-color:var(--red);outline:none}
+section.ch{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:clamp(20px,3.5vw,48px);padding:clamp(28px,4vw,48px) 0;border-top:1px solid var(--line)}
+section.ch:first-of-type{border-top:0}
+.ch h3{font-size:26px;line-height:1.15;margin:0 0 10px;display:flex;gap:12px;align-items:baseline}
+.ch h3 .n{flex:none;font-size:14px;color:var(--red);border:1px solid var(--red);padding:2px 8px;transform:translateY(-3px)}
+.ch p{margin:0 0 12px}
+.steps{list-style:none;margin:6px 0 14px;padding:0;counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding:8px 0 8px 40px;border-bottom:1px dashed var(--line)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:9px;width:26px;height:26px;display:grid;place-items:center;background:var(--red);color:#120506;font-weight:700;font-size:14px;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
+.note{background:var(--raised);border-left:3px solid var(--red);padding:12px 14px;margin:12px 0;font-size:15.5px}
+.note b{color:var(--red)}
+.keys{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:10px 0 14px;font-size:15.5px}
+.keys dt{color:var(--red);font-weight:600;white-space:nowrap}
+.keys dd{margin:0;color:var(--ink)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+.tags span{font-size:13.5px;border:1px solid var(--line);padding:3px 8px;color:var(--muted)}
+.tags span::before{content:"";display:inline-block;width:6px;height:6px;background:var(--red);border-radius:50%;margin-right:7px;transform:translateY(-1px)}
+/* capturas */
+.shots{display:grid;gap:14px;align-content:start}
+.shots.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+figure.shot{margin:0}
+.shot button{all:unset;display:block;width:100%;cursor:zoom-in;background:var(--line);padding:1px;position:relative}
+.shot button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.shot button::after{content:"";position:absolute;inset:1px;background:repeating-linear-gradient(0deg,rgba(255,64,52,.025) 0 2px,transparent 2px 5px);pointer-events:none}
+.shot img{width:100%;background:var(--raised)}
+.shot figcaption{font-size:14px;color:var(--muted);padding:8px 2px 0}
+.shot.tall{max-width:380px}
+/* visor */
+dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1400px);max-height:94vh}
+dialog.lb::backdrop{background:rgba(7,4,5,.92)}
+dialog.lb img{max-height:84vh;width:auto;max-width:100%;margin:0 auto;border:1px solid var(--line)}
+dialog.lb p{color:var(--ink);text-align:center;margin:10px 0 0;font-size:15px}
+.lb-bar{display:flex;justify-content:center;gap:10px;margin-top:10px}
+.lb-bar button{font:inherit;color:var(--ink);background:var(--raised);border:1px solid var(--line);min-width:44px;min-height:44px;padding:0 16px;cursor:pointer}
+.lb-bar button:hover,.lb-bar button:focus-visible{border-color:var(--red);outline:none}
+/* cierre */
+.end{padding:clamp(40px,6vw,72px) 0}
+.end-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.end-card{background:var(--raised);padding:18px}
+.end-card h4{margin:0 0 6px;font-size:18px;color:var(--red)}
+.end-card p{margin:0;color:var(--muted);font-size:15px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+footer img{width:40px}
+@media(max-width:900px){.hero-grid,section.ch{grid-template-columns:minmax(0,1fr)}.end-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.toc a:not(.cta){display:none}.paths{grid-template-columns:minmax(0,1fr)}.shots.two{grid-template-columns:minmax(0,1fr)}.brand span{display:none}body{font-size:16px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio"><img src="img/logo_mark.png" alt="Asmodevs"><span>ASMODEVS</span></a>
+    <nav class="toc" aria-label="Partes de la guía">
+      <a href="#jugadores">Jugadores</a>
+      <a href="#tiendas">Tiendas</a>
+      <a href="#contador">Contador de vidas</a>
+      <a class="cta" href="#alta">Dar de alta mi tienda</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="hero" id="inicio">
+  <div class="wrap hero-grid">
+    <div>
+      <img class="logo-big" src="img/logo_full.png" alt="Logotipo de Asmodevs: un cerebro hecho de circuitos en rojo">
+      <h1>Guía de Untapped: de la primera ronda a la clasificación final</h1>
+      <p class="lead">Untapped es la plataforma de Asmodevs para llevar torneos de juegos de cartas: la tienda apunta a los jugadores, lanza cada ronda con sus emparejamientos y apunta los resultados; los jugadores lo siguen en directo desde el móvil. Elige tu camino.</p>
+      <div class="paths">
+        <a class="path cut" href="#jugadores"><div class="cut"><b>Soy jugador</b><span>Buscar torneos, seguirlos en directo, ver la clasificación y usar el contador de vidas. Sin cuenta.</span></div></a>
+        <a class="path cut" href="#tiendas"><div class="cut"><b>Tengo una tienda</b><span>Pedir la cuenta, crear torneos, lanzar rondas, apuntar resultados y publicarlo todo.</span></div></a>
+      </div>
+    </div>
+    <div class="hero-shot cut"><img class="cut" src="img/p_home.jpg" alt="Portada de untapped.es con los accesos a torneos, tiendas y contador de vidas" width="1076" height="675"><span class="tag cut">untapped.es</span></div>
+  </div>
+</div>
+
+<!-- ================= JUGADORES ================= -->
+<div class="part" id="jugadores">
+ <div class="wrap">
+  <div class="part-head"><span class="chip cut">Parte 1</span><h2>Para jugadores</h2></div>
+  <p class="part-intro">No necesitas cuenta: solo las tiendas tienen una. La tienda te apunta a cada torneo con tu nombre y tú lo sigues desde cualquier navegador.</p>
+  <nav class="chapters" aria-label="Capítulos para jugadores">
+    <a href="#j-buscar">Buscar torneos</a><a href="#j-directo">Seguir un torneo</a><a href="#j-clasif">Clasificación</a><a href="#j-multi">Mesas multijugador</a><a href="#j-tiendas">Tiendas</a><a href="#j-ligas">Ligas</a><a href="#contador">Contador de vidas</a><a href="#j-ajustes">Idioma, tema y ayuda</a>
+  </nav>
+
+  <section class="ch" id="j-buscar">
+    <div>
+      <h3><span class="n">1.1</span>Buscar torneos</h3>
+      <p>En <b>Torneos</b> ves los próximos torneos de todas las tiendas, agrupados por día y los más cercanos primero.</p>
+      <ol class="steps">
+        <li>Elige el <b>juego</b> y, después, el <b>formato</b> (el formato se activa al elegir juego).</li>
+        <li>Filtra por <b>provincia</b> y <b>municipio</b>, o pulsa el icono de diana para buscar <b>cerca de ti</b>.</li>
+        <li>Con el filtro <b>Liga</b> decides si incluir los torneos que forman parte de una liga.</li>
+        <li>Escribe parte del <b>nombre</b> si lo conoces: no importan tildes ni mayúsculas.</li>
+        <li>Toca un día del <b>calendario</b> para ver otra fecha, y pulsa la lupa para buscar. El embudo tachado borra los filtros.</li>
+      </ol>
+      <p>Cada tarjeta dice la hora, el estado (por empezar, <b>En juego: ronda X de Y</b> o <b>Terminado</b>), la tienda, el formato y la liga si la tiene.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_torneos1.jpg" alt="Buscador de torneos con filtros de juego, formato, provincia, municipio, liga, nombre y calendario" width="1076" height="675" loading="lazy"></button><figcaption>Filtros y calendario del buscador de torneos.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/u_torneos2.jpg" alt="Resultados agrupados por fecha con dos torneos de cEDH" width="1076" height="675" loading="lazy"></button><figcaption>Resultados agrupados por día, con su estado en directo.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="j-directo">
+    <div>
+      <h3><span class="n">1.2</span>Seguir un torneo en directo</h3>
+      <p>Si la tienda lo publica, cada torneo tiene su propia página, que se actualiza mientras se juega. Pide el enlace a la tienda o búscalo en su calendario.</p>
+      <dl class="keys">
+        <dt>Cabecera</dt><dd>Juego, formato, fecha, número de rondas, minutos por ronda y tipo de puntuación.</dd>
+        <dt>Estado</dt><dd>Por empezar, en juego (ronda actual) o terminado.</dd>
+        <dt>Reloj</dt><dd>El tiempo que le queda a la ronda en juego.</dd>
+        <dt>Compartir</dt><dd>Copia o envía el enlace del torneo.</dd>
+        <dt>Rondas</dt><dd>Dónde juegas, en qué mesa y contra quién en cada ronda, con los resultados ya apuntados.</dd>
+      </dl>
+      <div class="note"><b>Truco:</b> en la pestaña Rondas busca tu nombre para saber tu mesa. Un torneo terminado muestra el trofeo junto al ganador.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_torneo_cedh.jpg" alt="Página pública de un torneo en juego con liga, tienda, botón de compartir y reloj de la ronda" width="1076" height="675" loading="lazy"></button><figcaption>Torneo en juego: liga, tienda, compartir y reloj de la ronda.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/u_rondas.jpg" alt="Pestaña de rondas con las mesas, los resultados y el bye" width="1076" height="675" loading="lazy"></button><figcaption>Pestaña Rondas: mesas, resultados y bye de cada ronda.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="j-clasif">
+    <div>
+      <h3><span class="n">1.3</span>Entender la clasificación</h3>
+      <p>En los torneos 1 contra 1 (Modern, Pauper, Standard…) se juega por <b>sistema suizo</b>: cada ronda te empareja con alguien de tus mismos puntos al que no te hayas enfrentado. Victoria 3 puntos, empate 1, derrota 0.</p>
+      <dl class="keys">
+        <dt>V-D-E</dt><dd>Victorias, derrotas y empates de enfrentamientos. «(1 bye)» si una ronda no tuviste rival: cuenta como victoria 2-0.</dd>
+        <dt>OMW%</dt><dd>Media del porcentaje de victorias de tus rivales. Desempata primero: mejor cuanto más fuertes han sido.</dd>
+        <dt>GW%</dt><dd>Tu porcentaje de partidas ganadas.</dd>
+        <dt>OGW%</dt><dd>Porcentaje de partidas ganadas de tus rivales.</dd>
+      </dl>
+      <p>Siguen las normas de torneo de Magic: ningún porcentaje baja del 33 %, y el bye no cuenta en los desempates de tus rivales. Si te retiras, sales como «(retirado, ronda X)».</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_clasif.jpg" alt="Clasificación final con puntos, V-D-E, OMW, GW y OGW, un bye y dos retirados" width="1076" height="675" loading="lazy"></button><figcaption>Clasificación final de un suizo de Modern a 3 rondas.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="j-multi">
+    <div>
+      <h3><span class="n">1.4</span>Mesas multijugador (Commander y cEDH)</h3>
+      <p>En los formatos multijugador las rondas se juegan en mesas de 3 o 4 con un asiento para cada jugador. Cada ronda da puntos por puesto; con la puntuación EDH estándar: 4, 3, 2 y 1.</p>
+      <dl class="keys">
+        <dt>Rondas</dt><dd>Cuántas rondas has jugado.</dd>
+        <dt>BH</dt><dd>Buchholz: la media de puntos de los rivales con los que has jugado. Desempata a quien tiene los mismos puntos.</dd>
+      </dl>
+      <p>El <b>corazón</b> de cada mesa abre el contador de vidas con los nombres de sus jugadores y el reloj de la ronda.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_torneo_mesas.jpg" alt="Ronda de cEDH con tres mesas de cuatro jugadores y un corazón en cada mesa" width="1076" height="675" loading="lazy"></button><figcaption>Mesas de 4 con sus asientos; el corazón abre el contador.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/u_contador_mesa.jpg" alt="Contador de vidas de una mesa con los cuatro nombres de los jugadores a 40 vidas" width="1280" height="580" loading="lazy"></button><figcaption>El contador abierto desde la mesa 1, ya con los nombres.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="j-tiendas">
+    <div>
+      <h3><span class="n">1.5</span>Tiendas y su calendario</h3>
+      <p>En <b>Tiendas</b> están todas las tiendas que organizan torneos, filtrables por provincia, municipio o nombre, o cerca de ti.</p>
+      <ol class="steps">
+        <li>Entra en la ficha de una tienda para ver su dirección, el botón de <b>mapa</b> y el de <b>compartir</b>.</li>
+        <li>Su <b>calendario semanal</b> muestra sus torneos; cambia de semana con las flechas o salta a una fecha con el icono de calendario.</li>
+        <li>Debajo tienes la lista de torneos de esa semana; toca uno para abrirlo.</li>
+      </ol>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_tiendas.jpg" alt="Listado de tiendas con filtros y tres tiendas de Madrid" width="1076" height="675" loading="lazy"></button><figcaption>Listado de tiendas.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/u_tienda.jpg" alt="Ficha de una tienda con su calendario semanal de torneos" width="1076" height="675" loading="lazy"></button><figcaption>Ficha de tienda con su calendario semanal.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="j-ligas">
+    <div>
+      <h3><span class="n">1.6</span>Ligas</h3>
+      <p>Una liga agrupa varios torneos de un mismo juego y formato durante unas semanas o meses. Cada torneo de la liga da <b>puntos de liga</b> según las reglas de la tienda.</p>
+      <p>La página de la liga muestra las fechas, la tienda, la clasificación (puntos y torneos jugados; con los mismos puntos se comparte posición) y la lista de sus torneos. Llegas a ella desde el enlace «Liga:» de cualquiera de sus torneos.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_liga.jpg" alt="Página de una liga de cEDH con su clasificación de puntos" width="1076" height="675" loading="lazy"></button><figcaption>Clasificación de una liga en curso.</figcaption></figure>
+    </div>
+  </section>
+ </div>
+</div>
+
+<!-- ================= CONTADOR ================= -->
+<div class="part" id="contador">
+ <div class="wrap">
+  <div class="part-head"><span class="chip cut">Para todos</span><h2>Contador de vidas</h2></div>
+  <p class="part-intro">Gratis y sin cuenta. La partida se guarda en tu navegador: si recargas, sigue donde la dejaste.</p>
+
+  <section class="ch">
+    <div>
+      <h3><span class="n">C.1</span>Jugar una partida</h3>
+      <ol class="steps">
+        <li>Abre <b>Contador vidas</b> en el menú. Por defecto es un versus a 20 vidas, con el panel de arriba girado para el rival.</li>
+        <li>Toca <b>+</b> o <b>−</b> en el panel de cada jugador para sumar o restar vidas.</li>
+        <li>La etiqueta <b>Empieza</b> marca a quien abre la partida, elegido por la ruleta.</li>
+        <li>Los botones del centro: <b>reiniciar</b>, <b>configurar</b>, <b>dados</b> y <b>pantalla completa</b>.</li>
+      </ol>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/u_cont_versus.jpg" alt="Contador en modo versus a 20 vidas con contador de veneno" width="1076" height="675" loading="lazy"></button><figcaption>Versus a 20 vidas, con veneno activado.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch">
+    <div>
+      <h3><span class="n">C.2</span>Configurar, Commander y dados</h3>
+      <dl class="keys">
+        <dt>Modo</dt><dd>Versus o Commander. En Commander eliges 2, 3 o 4 jugadores.</dd>
+        <dt>Vidas</dt><dd>20, 30, 40, 60 u otra cifra.</dd>
+        <dt>Veneno</dt><dd>Activa el contador de veneno en cada panel.</dd>
+        <dt>Comandante</dt><dd>Los chips de colores de cada panel son el daño de comandante recibido de cada rival; al tocarlo se abre y lo que sumes también resta vidas.</dd>
+        <dt>Dados</dt><dd>D4, D6, D8, D10, D12, D20, D100 y moneda. Pulsa la pantalla negra para lanzar.</dd>
+      </dl>
+    </div>
+    <div class="shots two">
+      <figure class="shot"><button type="button"><img src="img/u_cont_config.jpg" alt="Diálogo Configurar partida con modo, jugadores, vidas iniciales y veneno" width="1076" height="675" loading="lazy"></button><figcaption>Configurar partida.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/u_cont_dados.jpg" alt="Diálogo de dados con un D20 que ha sacado un 12" width="1076" height="675" loading="lazy"></button><figcaption>Dados y moneda.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="j-ajustes">
+    <div>
+      <h3><span class="n">C.3</span>Idioma, tema y ayuda</h3>
+      <p>Arriba a la derecha cambias entre <b>tema claro y oscuro</b> y entre <b>español e inglés</b>. En el pie de página tienes Contacto, Preguntas frecuentes y los textos legales.</p>
+      <div class="note"><b>¿Tu nombre está mal o quieres que lo quiten?</b> Díselo a la tienda: ella escribe los nombres y puede cambiarlos. Si no puedes, escribe desde Contacto.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/p_faq.jpg" alt="Página de preguntas frecuentes de Untapped" width="1076" height="675" loading="lazy"></button><figcaption>Preguntas frecuentes, para tiendas y jugadores.</figcaption></figure>
+    </div>
+  </section>
+ </div>
+</div>
+
+<!-- ================= TIENDAS ================= -->
+<div class="part" id="tiendas">
+ <div class="wrap">
+  <div class="part-head"><span class="chip cut">Parte 2</span><h2>Para tiendas</h2></div>
+  <p class="part-intro">Todo lo que necesita una tienda para llevar sus torneos: desde pedir la cuenta hasta publicar la clasificación final.</p>
+  <nav class="chapters" aria-label="Capítulos para tiendas">
+    <a href="#alta">Pedir la cuenta</a><a href="#t-invitacion">Invitación</a><a href="#t-entrar">Entrar</a><a href="#t-cuenta">Mi cuenta</a><a href="#t-mis">Mis torneos</a><a href="#t-crear">Crear un torneo</a><a href="#t-jugadores">Jugadores</a><a href="#t-lanzar">Lanzar ronda</a><a href="#t-resultados">Resultados</a><a href="#t-rondas">Siguientes rondas</a><a href="#t-retirar">Retiradas</a><a href="#t-edh">Commander</a><a href="#t-publicar">Publicar</a><a href="#t-finalizar">Finalizar</a><a href="#t-ligas">Ligas</a>
+  </nav>
+
+  <section class="ch" id="alta">
+    <div>
+      <h3><span class="n">2.1</span>Pedir una cuenta de tienda</h3>
+      <p>Las cuentas son <b>solo por invitación</b>, así que no hay página de registro. Pueden pedirla tiendas y organizadores de torneos de cartas en España.</p>
+      <ol class="steps">
+        <li>Ve a <b>Contacto</b> (o «Pedir una cuenta de tienda» en Preguntas frecuentes).</li>
+        <li>Deja marcada la opción <b>Una cuenta de tienda</b>.</li>
+        <li>Rellena tu nombre, tu email, el nombre de la tienda, la provincia y el municipio. El mensaje es opcional.</li>
+        <li>Pulsa <b>Enviar</b>. Leemos cada solicitud y, si encaja, te llega una invitación por email.</li>
+      </ol>
+      <div class="note"><b>Precio:</b> todas las tiendas empiezan con el plan gratuito, con 8 torneos que empiecen cada mes, programados como mucho con 3 meses de antelación. Si necesitas más, escríbenos.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/p_faq_alta.jpg" alt="Respuesta de las preguntas frecuentes sobre cómo conseguir una cuenta" width="1076" height="675" loading="lazy"></button><figcaption>Cómo se consigue una cuenta, en Preguntas frecuentes.</figcaption></figure>
+      <div class="shots two">
+        <figure class="shot"><button type="button"><img src="img/p_contacto1.jpg" alt="Formulario de contacto con la opción Una cuenta de tienda" width="1076" height="675" loading="lazy"></button><figcaption>Formulario de solicitud.</figcaption></figure>
+        <figure class="shot"><button type="button"><img src="img/p_contacto2.jpg" alt="Segunda parte del formulario: tienda, provincia, municipio, mensaje y Enviar" width="1076" height="675" loading="lazy"></button><figcaption>Datos de la tienda y Enviar.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="t-invitacion">
+    <div>
+      <h3><span class="n">2.2</span>El email de invitación</h3>
+      <p>Si se aprueba, recibes un email «Te han invitado».</p>
+      <ol class="steps">
+        <li>Pulsa <b>Crear mi cuenta</b> (o copia el enlace en el navegador si el botón no funciona).</li>
+        <li>Elige el <b>nombre de tu tienda</b> y una <b>contraseña</b>.</li>
+        <li>Ya puedes entrar y crear tu primer torneo.</li>
+      </ol>
+      <div class="note"><b>Ojo:</b> el enlace funciona una sola vez y caduca en 15 minutos. Si caduca, pide otro. Si no esperabas el email, ignóralo: no se crea ninguna cuenta.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot tall"><button type="button"><img src="img/t_email.jpg" alt="Email de invitación de Untapped con el botón Crear mi cuenta" width="674" height="1152" loading="lazy"></button><figcaption>Email de invitación (enlace difuminado).</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-entrar">
+    <div>
+      <h3><span class="n">2.3</span>Entrar y recuperar la contraseña</h3>
+      <ol class="steps">
+        <li>Pulsa <b>Entrar</b> arriba a la derecha y escribe el email y la contraseña de tu tienda.</li>
+        <li>Al entrar aparecen en el menú <b>Mis torneos</b>, <b>Mis ligas</b> y tu imagen, que lleva a <b>Mi cuenta</b>.</li>
+        <li>¿La olvidaste? Pulsa <b>¿Has olvidado tu contraseña?</b>, escribe tu email y te llega un enlace para elegir otra. Caduca a los 30 minutos; si no llega, mira en spam.</li>
+      </ol>
+    </div>
+    <div class="shots two">
+      <figure class="shot"><button type="button"><img src="img/p_login.jpg" alt="Página Entrar con email y contraseña" width="1076" height="675" loading="lazy"></button><figcaption>Entrar.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/p_reset.jpg" alt="Página Contraseña olvidada" width="1076" height="675" loading="lazy"></button><figcaption>Contraseña olvidada.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-cuenta">
+    <div>
+      <h3><span class="n">2.4</span>Configurar Mi cuenta</h3>
+      <p>Lo que pongas aquí es lo que ven los jugadores en el listado de tiendas, en tu ficha y en tus torneos.</p>
+      <dl class="keys">
+        <dt>Imagen</dt><dd>Tu logo o una foto (JPEG, PNG o WebP) y un color de fondo. Sin imagen salen tus iniciales.</dd>
+        <dt>Nombre</dt><dd>Si lo cambias, cambia también la dirección de tu página pública.</dd>
+        <dt>Dónde estáis</dt><dd>Provincia, municipio, dirección y código postal.</dd>
+        <dt>Encontraros</dt><dd>Web, redes sociales (Instagram, Facebook, X, TikTok, YouTube, Twitch, Discord, Telegram, WhatsApp) y tu tienda en marketplaces de cartas como Cardmarket.</dd>
+        <dt>Abajo</dt><dd>La llave cambia la contraseña (cierra tus otras sesiones); la papelera elimina la cuenta para siempre, tras escribir el nombre de la tienda. Pulsa <b>Guardar</b> para aplicar los cambios. El email no se puede cambiar.</dd>
+      </dl>
+    </div>
+    <div class="shots two">
+      <figure class="shot"><button type="button"><img src="img/t_cuenta1.jpg" alt="Mi cuenta: imagen, fondo, provincia, municipio y dirección" width="1076" height="675" loading="lazy"></button><figcaption>Imagen y ubicación.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/t_cuenta2.jpg" alt="Mi cuenta: web, redes sociales, marketplaces, plan y botón Guardar" width="1076" height="675" loading="lazy"></button><figcaption>Redes, plan y Guardar.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-mis">
+    <div>
+      <h3><span class="n">2.5</span>Mis torneos</h3>
+      <p>Tu panel de trabajo. Arriba está tu <b>plan</b> con los torneos usados en cada uno de los próximos meses (un torneo cuenta en el mes en que empieza, publicado o no).</p>
+      <p>Debajo, los filtros: juego, formato, <b>estado</b> (sin empezar, en juego, terminado), liga, <b>publicación</b>, nombre y fecha. Toca un torneo para gestionarlo, o pulsa <b>Nuevo torneo</b>.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_mis1.jpg" alt="Mis torneos con el botón Nuevo torneo, el cupo del plan Free y los filtros" width="1076" height="675" loading="lazy"></button><figcaption>Cupo del plan y filtros.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/t_mis2.jpg" alt="Lista de cuatro torneos con su estado y publicación" width="1076" height="675" loading="lazy"></button><figcaption>Tus torneos con su estado.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-crear">
+    <div>
+      <h3><span class="n">2.6</span>Crear un torneo</h3>
+      <ol class="steps">
+        <li>Elige el <b>juego</b>: Magic, Pokémon, Lorcana, One Piece, Riftbound, Yu-Gi-Oh!, El Señor de los Anillos o Star Wars: Unlimited.</li>
+        <li>Elige el <b>formato</b>; puedes escribir para filtrar la lista.</li>
+        <li>Escribe el <b>nombre</b> y, si quieres, una descripción (precio, premios…) y un <b>enlace para pagar online</b> en la web de tu tienda.</li>
+        <li>Elige la <b>fecha y hora</b> en el calendario y pulsa Listo.</li>
+        <li>Ajusta <b>rondas</b>, <b>minutos por ronda</b> (activa el reloj) y <b>partidas</b>: al mejor de 1 o de 3.</li>
+        <li>Opcional en Magic: el <b>código de Companion</b> de tu evento en EventLink (4 a 12 letras y cifras).</li>
+        <li>Pulsa <b>Crear torneo</b>. Nace sin empezar y sin publicar: solo lo ves tú.</li>
+      </ol>
+      <div class="tags"><span>Commander</span><span>cEDH</span><span>Pauper Commander</span><span>Oathbreaker</span><span>Standard</span><span>Pioneer</span><span>Modern</span><span>Premodern</span><span>Legacy</span><span>Vintage</span><span>Pauper</span><span>Duel Commander</span><span>Canadian Highlander</span><span>Old School</span><span>Middle School</span><span>Booster Draft</span><span>Sealed</span><span>Cube</span><span>Two-Headed Giant</span></div>
+      <div class="note"><b>Formatos multijugador</b> (Commander, Oathbreaker…): en lugar de «Partidas» eliges la <b>puntuación</b> (EDH estándar 4-3-2-1 o personalizada a mano), el <b>desempate</b> (Buchholz, Buchholz modificado o ninguno) y qué pasa en un <b>empate</b> (antistalling: 1 punto a cada jugador vivo, o superviviente más bajo).</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_nuevo1.jpg" alt="Formulario Nuevo torneo con Magic y Modern elegidos, nombre y descripción" width="1076" height="675" loading="lazy"></button><figcaption>Juego, formato, nombre y descripción.</figcaption></figure>
+      <div class="shots two">
+        <figure class="shot"><button type="button"><img src="img/t_nuevo_fecha.jpg" alt="Selector de fecha y hora del torneo" width="1076" height="675" loading="lazy"></button><figcaption>Fecha y hora.</figcaption></figure>
+        <figure class="shot"><button type="button"><img src="img/t_nuevo2.jpg" alt="Rondas, minutos por ronda, partidas y código de Companion" width="1076" height="675" loading="lazy"></button><figcaption>Rondas, reloj y partidas.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="t-jugadores">
+    <div>
+      <h3><span class="n">2.7</span>Apuntar a los jugadores</h3>
+      <ol class="steps">
+        <li>Escribe el nombre en <b>Nombre del jugador</b> y pulsa Enter o <b>+</b>. El cursor se queda en el campo para el siguiente.</li>
+        <li>No se permiten nombres repetidos (sin distinguir mayúsculas), y como máximo 60 caracteres.</li>
+        <li>¿Muchos jugadores? Abre <b>Añadir varios desde un archivo CSV</b>: descarga la plantilla, rellénala en Excel o Google Sheets (un nombre por fila) y súbela.</li>
+        <li>Con el <b>lápiz</b> corriges un nombre; con la <b>papelera</b> lo quitas antes de empezar.</li>
+      </ol>
+      <div class="note"><b>Jugadores que llegan tarde:</b> puedes añadirlos con el torneo empezado. Juegan desde la siguiente ronda, y cada ronda ya lanzada les cuenta como derrota.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_admin_vacio.jpg" alt="Torneo recién creado, sin jugadores ni rondas" width="1076" height="675" loading="lazy"></button><figcaption>El torneo recién creado.</figcaption></figure>
+      <div class="shots two">
+        <figure class="shot"><button type="button"><img src="img/t_jugadores.jpg" alt="Añadiendo jugadores uno a uno" width="1076" height="675" loading="lazy"></button><figcaption>Añadir uno a uno.</figcaption></figure>
+        <figure class="shot"><button type="button"><img src="img/t_csv.jpg" alt="Sección para añadir jugadores desde un archivo CSV" width="1076" height="675" loading="lazy"></button><figcaption>Importar desde CSV.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="t-lanzar">
+    <div>
+      <h3><span class="n">2.8</span>Lanzar la ronda</h3>
+      <ol class="steps">
+        <li>Pulsa el <b>play rojo</b> junto a «Rondas» y confirma <b>Lanzar ronda 1</b>. Hacen falta al menos 2 jugadores.</li>
+        <li>Untapped empareja al azar la primera ronda y numera las mesas. Si son impares, uno recibe un <b>bye</b> (gana la ronda 2-0).</li>
+        <li>Arranca el <b>reloj</b> de la ronda con los minutos que elegiste; lo ven también los jugadores.</li>
+        <li>Con la <b>impresora</b> de Rondas imprimes los emparejamientos para colgarlos; con la de Clasificación, la clasificación.</li>
+      </ol>
+      <div class="note"><b>Antes de lanzar:</b> después ya no se pueden quitar jugadores, solo retirarlos.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_lanzar.jpg" alt="Diálogo ¿Lanzar la primera ronda?" width="1076" height="675" loading="lazy"></button><figcaption>Confirmación antes de la ronda 1.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/t_empezado.jpg" alt="Torneo empezado con el reloj de la ronda en 49:50" width="1076" height="675" loading="lazy"></button><figcaption>Torneo en juego con su reloj.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-resultados">
+    <div>
+      <h3><span class="n">2.9</span>Apuntar resultados</h3>
+      <ol class="steps">
+        <li>Pulsa el icono de portapapeles de una mesa.</li>
+        <li>Escribe las <b>partidas ganadas</b> por cada jugador y las <b>empatadas</b>. Tab pasa al siguiente campo; Enter guarda.</li>
+        <li>La clasificación se recalcula al instante. Para corregir, pulsa el lápiz de la mesa.</li>
+      </ol>
+      <dl class="keys">
+        <dt>Al mejor de 3</dt><dd>2-0, 2-1, 1-1-1 (empate)… Se rechaza lo imposible, como 3-0 o 2-2.</dd>
+        <dt>Al mejor de 1</dt><dd>1-0 o 0-1.</dd>
+        <dt>Empate pactado</dt><dd>Apúntalo como 0-0-3.</dd>
+      </dl>
+      <div class="note"><b>No puedes lanzar la siguiente ronda</b> hasta que todas las mesas tengan resultado.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_resultado.jpg" alt="Apuntando un 2-1 en la mesa 1" width="1076" height="675" loading="lazy"></button><figcaption>Apuntando un 2-1.</figcaption></figure>
+      <figure class="shot"><button type="button"><img src="img/t_ronda_ok.jpg" alt="Ronda 1 con todos los resultados: 2-1, 0-2 y 1-1-1" width="1076" height="675" loading="lazy"></button><figcaption>Ronda completa: victoria, victoria y empate.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-rondas">
+    <div>
+      <h3><span class="n">2.10</span>Siguientes rondas y clasificación</h3>
+      <p>Con la ronda completa, vuelve a pulsar el play rojo. A partir de la segunda, Untapped empareja por <b>sistema suizo</b>: cada jugador con otro de sus mismos puntos, sin repetir rival; si un grupo de puntos es impar, alguien baja al grupo siguiente. El bye va al peor clasificado que aún no lo ha tenido.</p>
+      <p>Las pestañas «Ronda 1 ✓, Ronda 2…» te dejan revisar cualquier ronda. La clasificación usa OMW%, GW% y OGW% como desempates (los explicamos en <a href="#j-clasif">la parte de jugadores</a>).</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_ronda2.jpg" alt="Clasificación tras la ronda 1 y emparejamientos de la ronda 2" width="1076" height="675" loading="lazy"></button><figcaption>Ronda 2 emparejada por puntos: los líderes se cruzan.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-retirar">
+    <div>
+      <h3><span class="n">2.11</span>Retirar o reactivar a un jugador</h3>
+      <ol class="steps">
+        <li>Con el torneo empezado, la papelera del jugador pasa a ser <b>Retirar</b>.</li>
+        <li>Si ya ha jugado la ronda en curso, <b>apunta antes su resultado</b>: si no, la pierde.</li>
+        <li>Queda fuera de las siguientes rondas y sale en la clasificación como «(retirado, ronda X)».</li>
+        <li>Si vuelve, pulsa la flecha de <b>Reactivar</b>.</li>
+      </ol>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_retirar.jpg" alt="Diálogo ¿Retirar a Marcos?" width="1076" height="675" loading="lazy"></button><figcaption>Confirmación de retirada.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-edh">
+    <div>
+      <h3><span class="n">2.12</span>Torneos de Commander</h3>
+      <p>En los formatos multijugador Untapped reparte a los jugadores en <b>mesas de 3 o 4</b> con asiento asignado.</p>
+      <ol class="steps">
+        <li>Pulsa el portapapeles de la mesa: aparece un selector de <b>puesto</b> para cada jugador (1.º 4 pts, 2.º 3 pts…).</li>
+        <li>Si la partida acaba en empate, marca a los supervivientes como <b>Vivo en el empate</b> (con antistalling, 1 punto cada uno); los eliminados conservan su puesto.</li>
+        <li>Cada jugador ocupa un puesto distinto; si no, Untapped te avisa.</li>
+        <li>Quien se retira durante la ronda queda como primer eliminado.</li>
+      </ol>
+      <p>La clasificación muestra puntos, rondas jugadas y <b>BH</b> (Buchholz) para desempatar.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_edh_admin.jpg" alt="Torneo de Commander con puntuación EDH y clasificación con BH" width="1076" height="675" loading="lazy"></button><figcaption>Clasificación por puntos EDH y Buchholz.</figcaption></figure>
+      <div class="shots two">
+        <figure class="shot"><button type="button"><img src="img/t_edh_mesas.jpg" alt="Mesas de una ronda de Commander con los puntos de cada jugador y un retirado" width="1076" height="675" loading="lazy"></button><figcaption>Mesas con sus puntos.</figcaption></figure>
+        <figure class="shot"><button type="button"><img src="img/t_edh_puestos.jpg" alt="Selector de puestos de una mesa de Commander" width="1076" height="675" loading="lazy"></button><figcaption>Apuntar puestos.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="t-publicar">
+    <div>
+      <h3><span class="n">2.13</span>Publicar y compartir</h3>
+      <ol class="steps">
+        <li>Pulsa el <b>ojo</b> para publicar. Mientras está «Sin publicar», solo lo ves tú.</li>
+        <li>Publicado, aparece en tu ficha de tienda y en el calendario de torneos, con sus rondas y su clasificación en directo.</li>
+        <li>El icono de <b>enlace externo</b> abre la página pública: cópiala y compártela con tus jugadores.</li>
+        <li>El ojo tachado lo <b>despublica</b>. El lápiz edita los datos; con el torneo empezado ya no se pueden cambiar formato, fecha, rondas ni partidas.</li>
+      </ol>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_publicado.jpg" alt="Torneo terminado y publicado con los botones editar, despublicar y página pública" width="1076" height="675" loading="lazy"></button><figcaption>Torneo publicado: editar, despublicar y página pública.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-finalizar">
+    <div>
+      <h3><span class="n">2.14</span>Finalizar el torneo</h3>
+      <p>Tras la última ronda, pulsa la <b>bandera</b> roja y confirma. La clasificación queda como está y ya no se puede cambiar nada.</p>
+      <div class="note"><b>Antes de confirmar:</b> si alguna mesa no tiene resultado, el diálogo te dice cuáles. Esas mesas no contarán, así que apunta antes lo que falte.</div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_finalizar.jpg" alt="Diálogo para finalizar el torneo avisando de resultados pendientes" width="1076" height="675" loading="lazy"></button><figcaption>El aviso de mesas sin resultado.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="ch" id="t-ligas">
+    <div>
+      <h3><span class="n">2.15</span>Mis ligas</h3>
+      <p>Una liga agrupa torneos de un juego y formato durante unos días o meses. Sus jugadores se dan de alta una vez en la liga y se eligen en cada torneo, que les da puntos de liga según tus reglas.</p>
+      <p>Las ligas vienen con los planes <b>Unlimited</b> y <b>Testers</b>. Pulsa <b>Pregúntanos</b> para activarlas.</p>
+    </div>
+    <div class="shots">
+      <figure class="shot"><button type="button"><img src="img/t_ligas.jpg" alt="Página Mis ligas indicando los planes que las incluyen" width="1076" height="675" loading="lazy"></button><figcaption>Mis ligas en el plan Free.</figcaption></figure>
+    </div>
+  </section>
+ </div>
+</div>
+
+<div class="end">
+  <div class="wrap">
+    <div class="part-head"><h2>Un torneo en un vistazo</h2></div>
+    <div class="end-grid">
+      <div class="end-card cut"><h4>Antes</h4><p>Crea el torneo, apunta a los jugadores y publícalo para que lo encuentren.</p></div>
+      <div class="end-card cut"><h4>Durante</h4><p>Lanza la ronda, deja correr el reloj, apunta cada mesa y lanza la siguiente.</p></div>
+      <div class="end-card cut"><h4>Después</h4><p>Finaliza con la bandera y comparte la clasificación final.</p></div>
+    </div>
+    <p class="part-intro" style="margin-top:22px">¿Algo no funciona? Si tienes tienda, entra y escríbenos desde Contacto contando la página, qué hiciste y qué pasó. Si eres jugador, díselo a tu tienda.</p>
+  </div>
+</div>
+</main>
+
+<footer>
+  <div class="wrap"><img src="img/logo_mark.png" alt=""><span>Untapped es un proyecto de Asmodevs · untapped.es · asmodevs.es</span><span>Capturas tomadas el 25 de noviembre de 2026 en untapped.es y en su entorno de demostración.</span></div>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="Captura ampliada">
+  <img id="lb-img" alt="">
+  <p id="lb-cap"></p>
+  <div class="lb-bar"><button type="button" id="lb-prev" aria-label="Anterior">←</button><button type="button" id="lb-close">Cerrar</button><button type="button" id="lb-next" aria-label="Siguiente">→</button></div>
+</dialog>
+
+<script>
+{
+  const shots=[...document.querySelectorAll('figure.shot')];
+  const lb=document.getElementById('lb'),im=document.getElementById('lb-img'),cap=document.getElementById('lb-cap');
+  let cur=0;
+  const show=i=>{cur=(i+shots.length)%shots.length;const f=shots[cur],img=f.querySelector('img');im.src=img.src;im.alt=img.alt;cap.textContent=f.querySelector('figcaption')?.textContent||''};
+  shots.forEach((f,i)=>f.querySelector('button').addEventListener('click',()=>{show(i);try{lb.showModal()}catch(e){lb.setAttribute('open','')}}));
+  document.getElementById('lb-close').addEventListener('click',()=>lb.close());
+  document.getElementById('lb-prev').addEventListener('click',()=>show(cur-1));
+  document.getElementById('lb-next').addEventListener('click',()=>show(cur+1));
+  lb.addEventListener('click',e=>{if(e.target===lb)lb.close()});
+  document.addEventListener('keydown',e=>{if(!lb.open)return;if(e.key==='ArrowRight')show(cur+1);if(e.key==='ArrowLeft')show(cur-1)});
+}
+</script>
+</body>
+</html>
